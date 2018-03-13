@@ -8,36 +8,46 @@ import tkMessageBox
 import commands
 import os
 
-global font, desti, lab_dir_fon, nomdir_font
+global lab_dir_fon, directoris, path_comu
+directoris=[]
+									#	Directoris botons
+									#	[0] font
+									#	[1]	desti
+									#	[2]	comú
 
 def arxiu_fon():
-	global font, lab_dir_fon, nomdir_font
-	font=True
-	nomdir_font = tkFileDialog.askdirectory()
-	lab_dir_fon.configure(text='\t\t'+nomdir_font)
+	global lab_dir_fon, directoris
+	directoris[0]= tkFileDialog.askdirectory()
+	if directoris[0]:
+		lab_dir_fon.configure(text='\t\t'+directoris[0])
 
 def arxiu_des():
-	global desti
-	desti=True
-	lab_dir_des.configure(text='\t\t'+tkFileDialog.askdirectory())
+	global directoris
+	directoris[1] = tkFileDialog.askdirectory()
+	if directoris[1]:
+		lab_dir_des.configure(text='\t\t'+directoris[1])
+
+def arxius_path(path):
+	llista=[]
+	num_separadors = path.count(os.sep)
+	for dirpath,dirnames,filesname in os.walk(path):
+		num_separadors_act = dirpath.count(os.sep)
+		if num_separadors == num_separadors_act: 			#	Si nombre de separadors es igual (estem al mateix nivell), imprimim els fitxers
+			llista.append(filesname)
+	return llista
 
 def cercar():
-	if(font and desti):
-		os.chdir(nomdir_font)
-		#print os.walk('.', topdown=False)
-		#Aqui hay que utilizar un os.walk() 
-		#recorre el arbol del path de arriba-abajo
-		#o de abajo-arriba por cada subdirectorio
-		fitxers_originals = commands.getoutput('find . -type f -exec md5sum {} + | sort | uniq -w32 -dD | tr -s " " | cut -d " " -f 2')
-		if fitxers_originals:
-			editArea.delete(0,END)						
-			for i in fitxers_originals.split():
-				editArea.insert(END, i)
+	if(directoris[0] and directoris[1]):
+		#Arxius font
+		arxius_font=arxius_path(directoris[0])				#	Arxius font
+		arxius_desti=arxius_path(directoris[1])				#	Arxius desti
+		if ()
+		
 	else:
-		if font:
+		if directoris[0]:
 			msg='\nFalta el directori destí per afegir\n'
 		else:
-			if desti:
+			if directoris[1]:
 				msg='\nFalta el directori font per afegir\n'			
 			else:
 				msg='\nFalten els dos directoris per afegir\n'

@@ -81,9 +81,9 @@ hdl = Button(frame_mid_T, text = "Hard Link", width = 13)
 hdl.pack(pady=1)
 stl = Button(frame_mid_T, text = "Soft Link", width = 13)
 stl.pack(pady=1)
-selt = Button(frame_mid_T, text = "Selec Tots", width = 13, command=fnt.seleccionar_tots)
+selt = Button(frame_mid_T, text = "Selec Tots", width = 13, command=fnt.seleccionar_tots_iguals)
 selt.pack(pady=1)
-selc = Button(frame_mid_T, text = "Selec Cap", width = 13, command=fnt.desseleccionar_tots)
+selc = Button(frame_mid_T, text = "Selec Cap", width = 13, command=fnt.desseleccionar_tots_iguals)
 selc.pack(pady=1)
 
 #Objetos Frame MIDDLE_BELOW
@@ -102,9 +102,9 @@ renom = Button(frame_mid_below, text = "Renombra", width = 13)
 renom.pack(pady=1)
 esborra = Button(frame_mid_below, text = "Esborra", width = 13)
 esborra.pack(pady=1)
-selectots = Button(frame_mid_below, text = "Selec Tots", width = 13)
+selectots = Button(frame_mid_below, text = "Selec Tots", width = 13, command=fnt.seleccionar_tots_sem)
 selectots.pack(pady=1)
-seleccap = Button(frame_mid_below, text = "Selec Cap", width = 13)
+seleccap = Button(frame_mid_below, text = "Selec Cap", width = 13, command=fnt.desseleccionar_tots_sem)
 seleccap.pack(pady=1)
 	
 #Objetos Frame BOTTOM_ABSOLUT
@@ -116,9 +116,8 @@ sel_cap = Button(frame_bot_abs, text = "Selecciona Cap", width = 13, command=fnt
 sel_cap.pack(side=LEFT, anchor=E)
 
 '''Asignacion de variables'''
-(fnt.desti,fnt.font) = (False, False)
+fnt.directoris[0:1]=False, False
 (fnt.lab_dir_fon,fnt.lab_dir_des) = (lab_dir_fon,lab_dir_des)
-fnt.editArea = editArea
+fnt.editArea, fnt.editArea_rig_top, fnt.editArea_rig_bot = editArea, editArea_rig_top, editArea_rig_bot
 fnt.finestra = finestra
-
 finestra.mainloop()
