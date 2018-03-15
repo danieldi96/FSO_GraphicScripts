@@ -9,69 +9,72 @@ import tkMessageBox
 import functions as fnt
 
 def compara():
-	#if fnt.seleccionat(2):
-		#if not fnt.trash:
-			finestra_cmp=Tk()
-			finestra_cmp.title("Compara arxius")
-			finestra_cmp.geometry("800x800+250+100".format(400, 400))
-			finestra_cmp.minsize(800,800)
+	finestra_cmp=Tk()
+	finestra_cmp.title("Compara arxius")
+	finestra_cmp.geometry("800x800+250+100")
+	finestra_cmp.minsize(800,800)
+	
+	#Frames
+	frame_cmp_top=Frame(finestra_cmp)
+	frame_cmp_top.pack(side=TOP, anchor=W, fill=X)
+	
+	frame_cmp_bot=Frame(finestra_cmp)
+	frame_cmp_bot.pack(side=BOTTOM, anchor=S, fill=X)
+	
+	frame_cmp_left=Frame(finestra_cmp)
+	frame_cmp_left.pack(side=LEFT, anchor=W, fill=BOTH, expand=True)
+	
+	frame_cmp_right=Frame(finestra_cmp)
+	frame_cmp_right.pack(side=LEFT, anchor=W, fill=BOTH, expand=True)
 
-			# create all of the main containers
-			frame_cmp_top=Frame(finestra_cmp, bg='red', width=800, height=200)
-			frame_cmp_mid=Frame(finestra_cmp, bg='green' ,width=800, height=550)
-			frame_cmp_bot=Frame(finestra_cmp, bg='white', width=800, height=50)
-
-			# layout all of the main containers
-						
-			finestra_cmp.grid_rowconfigure(1,weight=1)
-			finestra_cmp.grid_columnconfigure(0, weight=1)
-			
-			frame_cmp_top.grid(row=0, sticky="ew")
-			frame_cmp_mid.grid(row=1, sticky="nsew")
-			frame_cmp_bot.grid(row=3, sticky="ew")
-			
-			# create the widgets for the top frame			
-			frame_cmp_top_l=Frame(frame_cmp_top, bg="yellow", width=400, height=200)
-			frame_cmp_top_r=Frame(frame_cmp_top, bg="orange", width=400, height=200)
-			
-			# layout the widgets in the top frame
-			frame_cmp_top.grid_rowconfigure(0, weight=1)
-			frame_cmp_top.grid_columnconfigure(1, weight=1)
-			
-			frame_cmp_top_l.grid(row=0,column=0)
-			frame_cmp_top_r.grid(row=0, column=1)
-			
-			# create the widgets for the top_l frame	
-			lab_top=Label(frame_cmp_top_l, text="Inode i path relatiu font", width=400, height=20)					
-			text_cmp_top=Text(frame_cmp_top_l, width=400, height=180)
-			
-			# layout the widgets in the top_l frame
-			frame_cmp_top_l.grid_rowconfigure(0, weight=1)
-			frame_cmp_top_l.grid_columnconfigure(1, weight=1)
-			
-			lab_top.grid(row=0,column=0)
-			text_cmp_top.grid(row=1, column=0)
-						
-						
-			# create the widgets for the center frame
-			frame_cmp_mid_l=Frame(frame_cmp_mid, bg="cyan", width=400, height=550)
-			frame_cmp_mid_r=Frame(frame_cmp_mid, bg="black", width=400, height=550)
-			
-			# layout the widgets in the center frame
-			frame_cmp_mid.grid_rowconfigure(0, weight=1)
-			frame_cmp_mid.grid_columnconfigure(1, weight=1)
-						
-			frame_cmp_mid_l.grid(row=0,column=0)
-			frame_cmp_mid_r.grid(row=0, column=1)
-			
-			# create the widgets for the bottom frame
-			but_compara = Button(frame_cmp_bot, text = "Compara", width = 6)
-			but_compara.pack(side=TOP, anchor=W)
-			
-			sortir = Button(frame_cmp_bot, text = "Sortir", width = 6)
-			sortir.pack(side=BOTTOM, anchor=W)
-			
-			finestra_cmp.mainloop()
+	'''frame_cmp_top_l=Frame(frame_cmp_top, bg='red')
+	frame_cmp_top.pack(side=LEFT, anchor=W, fill=BOTH, expand=True)
+	
+	frame_cmp_top_r=Frame(frame_cmp_top, bg='blue')
+	frame_cmp_top.pack(side=LEFT, anchor=W, fill=X)'''
+	
+	#Widgets Frame TOP
+	lab_top=Label(frame_cmp_top, text="Inode i path relatiu font")
+	lab_top.pack(side=TOP, anchor=W)
+		
+	text_cmp_top=Text(frame_cmp_top, height=10)
+	text_cmp_top.pack(fill=BOTH)
+	'''
+	lab_top=Label(frame_cmp_top_r, text="Inode i path relatiu desti")
+	lab_top.pack(side=TOP, anchor=W)
+	
+	text_cmp_top_r=Text(frame_cmp_top_r, height=10)
+	text_cmp_top_r.pack(fill=BOTH)
+	'''
+	#Widgets Frame MID
+	lab_left=Label(frame_cmp_left, text="Arxiu Font")
+	lab_left.pack(side=TOP, anchor=W)
+	
+	text_cmp_left=Text(frame_cmp_left, width=50)
+	text_cmp_left.pack(fill=BOTH, expand=True)
+	
+	lab_right=Label(frame_cmp_right, text="Arxiu Destí")
+	lab_right.pack(side=TOP, anchor=W)
+	
+	text_cmp_right=Text(frame_cmp_right, width=50)
+	text_cmp_right.pack(fill=BOTH, expand=True)
+	
+	#Widgets Frame BOTTOM
+	but_compara = Button(frame_cmp_bot, text = "Compara", width = 6)
+	but_compara.pack(side=TOP, anchor=W)
+	
+	sortir = Button(frame_cmp_bot, text = "Sortir", width = 6)
+	sortir.pack(side=BOTTOM, anchor=W)
+	
+	
+	fnt.text_cmp_top=text_cmp_top
+	fnt.text_cmp_left=text_cmp_left
+	fnt.text_cmp_right=text_cmp_right
+	
+	fnt.inode()
+	fnt.obre_arxiu_font()
+	fnt.obre_arxiu_desti()
+	finestra_cmp.mainloop()
 	
 #MAIN
 finestra= Tk()

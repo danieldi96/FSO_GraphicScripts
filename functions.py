@@ -9,7 +9,7 @@ import commands
 import os
 import filecmp as comp
 
-global lab_dir_fon, directoris, path_comu, arxius_comuns, string_ln, index_ln
+global lab_dir_fon, directoris, path_comu, arxius_comuns, string_ln, index_ln, trash
 string_ln=[]
 arxius_comuns=[]
 directoris=[]
@@ -29,8 +29,13 @@ def arxiu_fon():
 def arxiu_des():
 	global directoris
 	directoris[1] = tkFileDialog.askdirectory()
+	global trash
+	trash=False	
 	if directoris[1]:
 		lab_dir_des.configure(text='\t\t'+directoris[1])
+	if directoris[1]==".local/share/Trash/files":	
+		tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
+		trash=True
 
 def arxius_path(pathf, pathd):	
 	llista=[]																#Llista = Contindra els arxius que estan als dos paths
@@ -45,24 +50,33 @@ def arxius_path(pathf, pathd):
 
 def cercar():
 	if(directoris[0] and directoris[1]):
-		editArea.delete(0,END)
-		editArea_rig_top.delete(0,END)
-		editArea_rig_bot.delete(0,END)
-		
-		#Arxius originals
-		global arxius_comuns
-		arxius_comuns = arxius_path(directoris[0], directoris[1])			
-		for i in range(0,len(arxius_comuns)):
-			editArea.insert(END, arxius_comuns[i])
+		if os.path.isdir(directoris[0]) and os.path.isdir(directoris[1]):
+			editArea.delete(0,END)
+			editArea_rig_top.delete(0,END)
+			editArea_rig_bot.delete(0,END)
 			
-		#Archius iguals i semblants
-		
-		os.chdir(directoris[1])
-		for i in range(0,len(arxius_comuns)):
-			if comp.cmp(directoris[0]+"/"+arxius_comuns[i], directoris[1]+"/"+arxius_comuns[i], shallow=False):		#Si son el mateix arxiu
-				editArea_rig_top.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
+			#Arxius originals
+			global arxius_comuns
+			arxius_comuns = arxius_path(directoris[0], directoris[1])			
+			for i in range(0,len(arxius_comuns)):
+				editArea.insert(END, arxius_comuns[i])
+				
+			#Archius iguals i semblants
+			if not trash:
+				os.chdir(directoris[1])
+				for i in range(0,len(arxius_comuns)):
+					if comp.cmp(directoris[0]+"/"+arxius_comuns[i], directoris[1]+"/"+arxius_comuns[i], shallow=False):		#Si son el mateix arxiu
+						editArea_rig_top.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
+					else:
+						editArea_rig_bot.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
+		else:
+			if os.path.isdir(directoris[0]):
+				msg="\nEl directori desti no existeix\n"
+			elif os.path.isdir(directoris[1]):
+				msg="\nEl directori font no existeix\n"
 			else:
-				editArea_rig_bot.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
+				msg="\nNo exiteixen cap dels dos directoris\n"
+			tkMessageBox.showerror(title="ERROR",message=msg)
 	else:
 		if directoris[0]:
 			msg='\nFalta el directori destí per afegir\n'
@@ -192,7 +206,19 @@ def hardlink():
 def softlink():
 	if seleccionat(1):
 		borrat_ln(2)
-	
+
+def inode():
+	os.system("")
+
+def obre_arxiu_font():
+	listbox_original=[]
+	listbox_original=editArea.get(0,END)
+	for i in range(0,len(listbox_original)):
+		if editArea_rig_bot.selection_get()==("./"+listbox_original[i]):
+			sel_cmp=listbox_original[i]
+	with open(directoris[0]+"/"+sel_cmp, 'r') as f:
+		text_cmp_left.insert(INSERT, f.read())
 		
-
-
+def obre_arxiu_desti():
+	with open(directoris[1]+"/"+editArea_rig_bot.selection_get()[2:], 'r') as f:
+		text_cmp_right.insert(INSERT, f.read())
