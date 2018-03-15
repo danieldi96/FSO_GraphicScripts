@@ -9,7 +9,8 @@ import commands
 import os
 import filecmp as comp
 
-global lab_dir_fon, directoris, path_comu, arxius_comuns, string_ln, index_ln, trash
+global lab_dir_fon, directoris, path_comu, arxius_comuns, string_ln, index_ln, trash, slink, path
+path=[]
 string_ln=[]
 arxius_comuns=[]
 directoris=[]
@@ -18,24 +19,30 @@ directoris=[]
 									#	[1]	desti
 									#	[2]	comú
 
-		
+def errores(path):
+	global trash, slink
+	trash,slink=False, False	
+	if path==".local/share/Trash/files":	
+		tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
+		trash=True		
+	if os.path.islink(path):
+		slink=True	
 		
 def arxiu_fon():
 	global lab_dir_fon, directoris
 	directoris[0]= tkFileDialog.askdirectory()
 	if directoris[0]:
 		lab_dir_fon.configure(text='\t\t'+directoris[0])
+	errores(directoris[0])
+	path[0]=directoris[0].replace(" ", "\ ")
 
 def arxiu_des():
 	global directoris
 	directoris[1] = tkFileDialog.askdirectory()
-	global trash
-	trash=False	
 	if directoris[1]:
 		lab_dir_des.configure(text='\t\t'+directoris[1])
-	if directoris[1]==".local/share/Trash/files":	
-		tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
-		trash=True
+	errores(directoris[1])
+	path[1]=directoris[1].replace(" ", "\ ")
 
 def arxius_path(pathf, pathd):	
 	llista=[]																#Llista = Contindra els arxius que estan als dos paths
@@ -50,43 +57,45 @@ def arxius_path(pathf, pathd):
 
 def cercar():
 	if(directoris[0] and directoris[1]):
-		if os.path.isdir(directoris[0]) and os.path.isdir(directoris[1]):
-			editArea.delete(0,END)
-			editArea_rig_top.delete(0,END)
-			editArea_rig_bot.delete(0,END)
-			
-			#Arxius originals
-			global arxius_comuns
-			arxius_comuns = arxius_path(directoris[0], directoris[1])			
-			for i in range(0,len(arxius_comuns)):
-				editArea.insert(END, arxius_comuns[i])
+		if not trash and not slink:
+			if os.path.isdir(directoris[0]) and os.path.isdir(directoris[1]):
+				editArea.delete(0,END)
+				editArea_rig_top.delete(0,END)
+				editArea_rig_bot.delete(0,END)
 				
-			#Archius iguals i semblants
-			if not trash:
-				os.chdir(directoris[1])
+				#Arxius originals
+				global arxius_comuns
+				arxius_comuns = arxius_path(directoris[0], directoris[1])			
 				for i in range(0,len(arxius_comuns)):
-					if comp.cmp(directoris[0]+"/"+arxius_comuns[i], directoris[1]+"/"+arxius_comuns[i], shallow=False):		#Si son el mateix arxiu
-						editArea_rig_top.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
-					else:
-						editArea_rig_bot.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
-		else:
-			if os.path.isdir(directoris[0]):
-				msg="\nEl directori desti no existeix\n"
-			elif os.path.isdir(directoris[1]):
-				msg="\nEl directori font no existeix\n"
+					editArea.insert(END, arxius_comuns[i])
+					
+				#Archius iguals i semblants
+				if not trash:
+					os.chdir(directoris[1])
+					for i in range(0,len(arxius_comuns)):
+						if comp.cmp(directoris[0]+"/"+arxius_comuns[i], directoris[1]+"/"+arxius_comuns[i], shallow=False):		#Si son el mateix arxiu
+							editArea_rig_top.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
+						else:
+							editArea_rig_bot.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
 			else:
-				msg="\nNo exiteixen cap dels dos directoris\n"
-			tkMessageBox.showerror(title="ERROR",message=msg)
-	else:
-		if directoris[0]:
-			msg='\nFalta el directori destí per afegir\n'
+				if os.path.isdir(directoris[0]):
+					msg="\nEl directori desti no existeix\n"
+				elif os.path.isdir(directoris[1]):
+					msg="\nEl directori font no existeix\n"
+				else:
+					msg="\nNo exiteixen cap dels dos directoris\n"
+				tkMessageBox.showerror(title="ERROR",message=msg)
 		else:
-			if directoris[1]:
-				msg='\nFalta el directori font per afegir\n'			
+			if directoris[0]:
+				msg='\nFalta el directori destí per afegir\n'
 			else:
-				msg='\nFalten els dos directoris per afegir\n'
-		tkMessageBox.showwarning(title='Error', message=msg, icon='warning')	
-		return None
+				if directoris[1]:
+					msg='\nFalta el directori font per afegir\n'			
+				else:
+					msg='\nFalten els dos directoris per afegir\n'
+			tkMessageBox.showwarning(title='Error', message=msg, icon='warning')	
+			return None
+			
 def salir():
 	if tkMessageBox.askquestion(title='Salir', message='\nSegur que vols sortir?\n', icon='warning')=='yes':
 		finestra.quit()
@@ -207,8 +216,10 @@ def softlink():
 	if seleccionat(1):
 		borrat_ln(2)
 
-def inode():
-	os.system("")
+def inode(num):
+	sel_inode=editArea_rig_bot.selection_get()
+	num_lineas=commands.getoutput("diff -y --suppress-common-lines "+sel_inode+" "+path[1-num]+"/"+sel_inode[2:]+" | wc -l")
+	text_cmp_top_r.insert(INSERT, "Inode: "+commands.getoutput("stat -c '%i' "+path[num]+"/"+sel_inode[2:])+"\nPath relatiu: "+sel_inode+"\nNombre de línies diferents: "+num_lineas+"\n")
 
 def obre_arxiu_font():
 	listbox_original=[]
@@ -222,3 +233,10 @@ def obre_arxiu_font():
 def obre_arxiu_desti():
 	with open(directoris[1]+"/"+editArea_rig_bot.selection_get()[2:], 'r') as f:
 		text_cmp_right.insert(INSERT, f.read())
+		
+def comparar_modificar():
+	os.chdir(directoris[0])
+	sel_inode=editArea_rig_bot.selection_get()
+	os.system("vimdiff "+sel_inode+" "+path[1]+"/"+sel_inode[2:])
+	#text_cmp_left.insert(INSERT, commands.getoutput("vimdiff "+sel_inode))
+	

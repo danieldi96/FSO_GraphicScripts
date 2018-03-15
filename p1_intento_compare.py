@@ -9,77 +9,87 @@ import tkMessageBox
 import functions as fnt
 
 def compara():
-	finestra_cmp=Tk()
-	finestra_cmp.title("Compara arxius")
-	finestra_cmp.geometry("800x800+250+100")
-	finestra_cmp.minsize(800,800)
-	
-	#Frames
-	frame_cmp_top=Frame(finestra_cmp, width=800, height=150)
-	frame_cmp_top.pack(side=TOP, anchor=W, fill=X)
-	
-	frame_cmp_bot=Frame(finestra_cmp)
-	frame_cmp_bot.pack(side=BOTTOM, anchor=S, fill=X)
-	
-	frame_cmp_left=Frame(finestra_cmp)
-	frame_cmp_left.pack(side=LEFT, anchor=W, fill=BOTH, expand=True)
-	
-	frame_cmp_right=Frame(finestra_cmp)
-	frame_cmp_right.pack(side=LEFT, anchor=W, fill=BOTH, expand=True)
-	
-	frame_cmp_top_l=Frame(frame_cmp_top, bg='red', width=400, height=150)
-	frame_cmp_top_l.pack(side=LEFT, anchor=W)
-	
-	frame_cmp_top_r=Frame(frame_cmp_top, bg='blue', width=400, height=150)
-	frame_cmp_top_r.pack(side=LEFT, anchor=E)
-	
-	#Widgets Frame TOP
-	#lab_top=Label(frame_cmp_top_l, text="Inode i path relatiu font")
-	#lab_top.pack(side=TOP, anchor=W)
-	'''	
-	text_cmp_top=Text(frame_cmp_top_l, height=50)
-	text_cmp_top.pack(fill=BOTH, expand=True)
-	
-	lab_top=Label(frame_cmp_top_r, text="Inode i path relatiu desti")
-	lab_top.pack(side=TOP, anchor=W)
-	
-	text_cmp_top_r=Text(frame_cmp_top_r, height=50)
-	text_cmp_top_r.pack(fill=BOTH, expand=True)
-	'''
-	#Widgets Frame MID
-	lab_left=Label(frame_cmp_left, text="Arxiu Font")
-	lab_left.pack(side=TOP, anchor=W)
-	
-	text_cmp_left=Text(frame_cmp_left, width=50)
-	text_cmp_left.pack(fill=BOTH, expand=True)
-	
-	lab_right=Label(frame_cmp_right, text="Arxiu Destí")
-	lab_right.pack(side=TOP, anchor=W)
-	
-	text_cmp_right=Text(frame_cmp_right, width=50)
-	text_cmp_right.pack(fill=BOTH, expand=True)
-	
-	#Widgets Frame BOTTOM
-	but_compara = Button(frame_cmp_bot, text = "Compara", width = 6)
-	but_compara.pack(side=TOP, anchor=W)
-	
-	sortir = Button(frame_cmp_bot, text = "Sortir", width = 6)
-	sortir.pack(side=BOTTOM, anchor=W)
-	'''
-	fnt.text_cmp_top=text_cmp_top
-	fnt.text_cmp_left=text_cmp_left
-	fnt.text_cmp_right=text_cmp_right
-	'''
-	fnt.inode()
-	fnt.obre_arxiu_font()
-	fnt.obre_arxiu_desti()
-	finestra_cmp.mainloop()
+	if fnt.seleccionat(2):
+		if not fnt.trash and not fnt.slink:
+			finestra_cmp=Tk()
+			finestra_cmp.title("Compara arxius")
+			finestra_cmp.geometry("800x600+250+50")
+			finestra_cmp.minsize(800,600)
+			
+			#Frames
+			frame_cmp_top=Frame(finestra_cmp, width=800, height=150)
+			frame_cmp_top.pack(side=TOP, anchor=W, fill=X)
+			
+			frame_cmp_bot=Frame(finestra_cmp)
+			frame_cmp_bot.pack(side=BOTTOM, anchor=S, fill=X)
+			
+			frame_cmp_left=Frame(finestra_cmp)
+			frame_cmp_left.pack(side=LEFT, anchor=W, fill=BOTH, expand=True, padx=2)
+			
+			frame_cmp_right=Frame(finestra_cmp)
+			frame_cmp_right.pack(side=LEFT, anchor=W, fill=BOTH, expand=True, padx=2)
+			
+			frame_cmp_top_l=Frame(frame_cmp_top, width=400, height=150)
+			frame_cmp_top_l.pack(side=LEFT, anchor=W, fill=X, expand=True, padx=2)
+			
+			frame_cmp_top_r=Frame(frame_cmp_top, width=400, height=150)
+			frame_cmp_top_r.pack(side=LEFT, anchor=E, fill=X, expand=True, padx=2)
+			
+			#Widgets Frame TOP_l
+			lab_top=Label(frame_cmp_top_l, text="Inode i path relatiu font")
+			lab_top.pack(side=TOP, anchor=W)
+				
+			text_cmp_top=Text(frame_cmp_top_l, width=50, height=6)
+			text_cmp_top.pack(fill=BOTH, expand=True)
+			
+			lab_top=Label(frame_cmp_top_r, text="Inode i path relatiu desti")
+			lab_top.pack(side=TOP, anchor=W)
+			
+			text_cmp_top_r=Text(frame_cmp_top_r, width=50, height=6)
+			text_cmp_top_r.pack(fill=BOTH, expand=True)
+			
+			#Widgets Frame MID
+			lab_left=Label(frame_cmp_left, text="Arxiu Font")
+			lab_left.pack(side=TOP, anchor=W)
+			
+			scroll_frame_left = Scrollbar(frame_cmp_left)
+			scroll_frame_left.pack(side=RIGHT, fill=Y)
+			text_cmp_left=Text(frame_cmp_left, width=50, yscrollcommand=scroll_frame_left.set)
+			text_cmp_left.pack(side=RIGHT, fill=BOTH, expand=True)			
+			scroll_frame_left.config(command=text_cmp_left.yview)
+			
+			lab_right=Label(frame_cmp_right, text="Arxiu Destí")
+			lab_right.pack(side=TOP, anchor=W)
+			
+			scroll_frame_right = Scrollbar(frame_cmp_right)
+			scroll_frame_right.pack(side=LEFT, fill=Y)
+			text_cmp_right=Text(frame_cmp_right, width=50, yscrollcommand=scroll_frame_right.set)
+			text_cmp_right.pack(side=LEFT,fill=BOTH, expand=True)
+			scroll_frame_right.config(command=text_cmp_right.yview)
+			
+			#Widgets Frame BOTTOM
+			but_compara = Button(frame_cmp_bot, text = "Compara/modifica", width = 15, command=fnt.comparar_modificar)
+			but_compara.pack(side=TOP, anchor=W)
+			
+			sortir = Button(frame_cmp_bot, text = "Sortir", width = 6, command=finestra_cmp.destroy)
+			sortir.pack(side=BOTTOM, anchor=W)
+			
+			fnt.text_cmp_top=text_cmp_top
+			fnt.text_cmp_top_r=text_cmp_top_r
+			fnt.text_cmp_left=text_cmp_left
+			fnt.text_cmp_right=text_cmp_right
+			
+			fnt.inode(0)
+			fnt.inode(1)
+			fnt.obre_arxiu_font()
+			fnt.obre_arxiu_desti()
+			finestra_cmp.mainloop()
 	
 #MAIN
 finestra= Tk()
 finestra.title("Cerca fitxers Redundants")
 finestra.minsize(700,450)
-finestra.geometry('700x450+250+250')
+finestra.geometry('700x450+300+170')
 
 #Frame TOP(font)
 frame_top = Frame(finestra)
@@ -183,6 +193,7 @@ sel_cap.pack(side=LEFT, anchor=E)
 
 '''Asignacion de variables'''
 fnt.directoris[0:1]=False, False
+fnt.path[0:1]=False, False
 (fnt.lab_dir_fon,fnt.lab_dir_des) = (lab_dir_fon,lab_dir_des)
 fnt.editArea, fnt.editArea_rig_top, fnt.editArea_rig_bot = editArea, editArea_rig_top, editArea_rig_bot
 fnt.finestra= finestra
