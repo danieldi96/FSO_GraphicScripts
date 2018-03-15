@@ -15,7 +15,7 @@ def compara():
 	finestra_cmp.minsize(800,800)
 	
 	#Frames
-	frame_cmp_top=Frame(finestra_cmp)
+	frame_cmp_top=Frame(finestra_cmp, width=800, height=150)
 	frame_cmp_top.pack(side=TOP, anchor=W, fill=X)
 	
 	frame_cmp_bot=Frame(finestra_cmp)
@@ -26,25 +26,25 @@ def compara():
 	
 	frame_cmp_right=Frame(finestra_cmp)
 	frame_cmp_right.pack(side=LEFT, anchor=W, fill=BOTH, expand=True)
-
-	'''frame_cmp_top_l=Frame(frame_cmp_top, bg='red')
-	frame_cmp_top.pack(side=LEFT, anchor=W, fill=BOTH, expand=True)
 	
-	frame_cmp_top_r=Frame(frame_cmp_top, bg='blue')
-	frame_cmp_top.pack(side=LEFT, anchor=W, fill=X)'''
+	frame_cmp_top_l=Frame(frame_cmp_top, bg='red', width=400, height=150)
+	frame_cmp_top_l.pack(side=LEFT, anchor=W)
+	
+	frame_cmp_top_r=Frame(frame_cmp_top, bg='blue', width=400, height=150)
+	frame_cmp_top_r.pack(side=LEFT, anchor=E)
 	
 	#Widgets Frame TOP
-	lab_top=Label(frame_cmp_top, text="Inode i path relatiu font")
-	lab_top.pack(side=TOP, anchor=W)
-		
-	text_cmp_top=Text(frame_cmp_top, height=10)
-	text_cmp_top.pack(fill=BOTH)
-	'''
+	#lab_top=Label(frame_cmp_top_l, text="Inode i path relatiu font")
+	#lab_top.pack(side=TOP, anchor=W)
+	'''	
+	text_cmp_top=Text(frame_cmp_top_l, height=50)
+	text_cmp_top.pack(fill=BOTH, expand=True)
+	
 	lab_top=Label(frame_cmp_top_r, text="Inode i path relatiu desti")
 	lab_top.pack(side=TOP, anchor=W)
 	
-	text_cmp_top_r=Text(frame_cmp_top_r, height=10)
-	text_cmp_top_r.pack(fill=BOTH)
+	text_cmp_top_r=Text(frame_cmp_top_r, height=50)
+	text_cmp_top_r.pack(fill=BOTH, expand=True)
 	'''
 	#Widgets Frame MID
 	lab_left=Label(frame_cmp_left, text="Arxiu Font")
@@ -65,12 +65,11 @@ def compara():
 	
 	sortir = Button(frame_cmp_bot, text = "Sortir", width = 6)
 	sortir.pack(side=BOTTOM, anchor=W)
-	
-	
+	'''
 	fnt.text_cmp_top=text_cmp_top
 	fnt.text_cmp_left=text_cmp_left
 	fnt.text_cmp_right=text_cmp_right
-	
+	'''
 	fnt.inode()
 	fnt.obre_arxiu_font()
 	fnt.obre_arxiu_desti()
