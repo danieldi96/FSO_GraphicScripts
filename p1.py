@@ -3,35 +3,16 @@
 #
 
 from Tkinter import *
+import os
 import tkFileDialog
 import tkMessageBox
 import functions as fnt
-global entry_nom_nou, renombra_finestra, nom_nou
-
-def rename():
-	renombra_finestra=Tk()
-	frame_ren=Frame(renombra_finestra)
-	frame_ren.pack(side=BOTTOM)
-	renombra_finestra.geometry('200x50+500+500')
-	renombra_finestra.resizable(0,0)
-	renom_boto=Button(frame_ren, text="D'acord", command=fnt.renombra)
-	renom_boto.pack(side=BOTTOM)
-	renombra_finestra.title("Renombra Fitxer")
-	global nom_nou
-	entry_nom_nou=Entry(renombra_finestra, width=50, textvariable=nom_nou)
-	entry_nom_nou.pack(fill=X)
-		
-	renombra_finestra.mainloop()
 	
-	
-
 #MAIN
 finestra= Tk()
 finestra.title("Cerca fitxers Redundants")
 finestra.minsize(700,450)
 finestra.geometry('700x450+250+250')
-#fin_height = finestra.winfo_height()
-#fin_width = finestra.winfo_width()
 
 #Frame TOP(font)
 frame_top = Frame(finestra)
@@ -95,9 +76,9 @@ scroll_rig_top.config(command=editArea_rig_top.yview)
 
 esborra = Button(frame_mid_T, text = "Esborra", width = 13, command=fnt.esborra_iguals)
 esborra.pack(side=TOP, anchor=E, pady=1)
-hdl = Button(frame_mid_T, text = "Hard Link", width = 13)
+hdl = Button(frame_mid_T, text = "Hard Link", width = 13, command=fnt.hardlink)
 hdl.pack(pady=1)
-stl = Button(frame_mid_T, text = "Soft Link", width = 13)
+stl = Button(frame_mid_T, text = "Soft Link", width = 13, command=fnt.softlink)
 stl.pack(pady=1)
 selt = Button(frame_mid_T, text = "Selec Tots", width = 13, command=fnt.seleccionar_tots_iguals)
 selt.pack(pady=1)
@@ -116,7 +97,7 @@ scroll_rig_bot.config(command=editArea_rig_bot.yview)
 
 compara = Button(frame_mid_below, text = "Compara", width = 13)
 compara.pack(pady=1)
-renom = Button(frame_mid_below, text = "Renombra", width = 13, command=rename)
+renom = Button(frame_mid_below, text = "Renombra", width = 13, command=fnt.renombra)
 renom.pack(pady=1)
 esborra = Button(frame_mid_below, text = "Esborra", width = 13, command=fnt.esborra_semblants)
 esborra.pack(pady=1)
@@ -134,12 +115,8 @@ sel_cap = Button(frame_bot_abs, text = "Selecciona Cap", width = 13, command=fnt
 sel_cap.pack(side=LEFT, anchor=E)
 
 '''Asignacion de variables'''
-nom_nou=StringVar()
-entry_nom_nou=""
-renombra_finestra=None
 fnt.directoris[0:1]=False, False
-fnt.entry_nom_nou, fnt.nom_nou=entry_nom_nou, nom_nou
 (fnt.lab_dir_fon,fnt.lab_dir_des) = (lab_dir_fon,lab_dir_des)
 fnt.editArea, fnt.editArea_rig_top, fnt.editArea_rig_bot = editArea, editArea_rig_top, editArea_rig_bot
-fnt.finestra, fnt.renombra_finestra = finestra, renombra_finestra
+fnt.finestra= finestra
 finestra.mainloop()
