@@ -22,9 +22,6 @@ directoris=[]
 def errores(path):
 	global trash, slink
 	trash,slink=False, False	
-	if path==".local/share/Trash/files":	
-		tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
-		trash=True		
 	if os.path.islink(path):
 		slink=True	
 		
@@ -42,6 +39,9 @@ def arxiu_des():
 	if directoris[1]:
 		lab_dir_des.configure(text='\t\t'+directoris[1])
 	errores(directoris[1])
+	if directoris[1]==".local/share/Trash/files":	
+		tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
+		trash=True		
 	path[1]=directoris[1].replace(" ", "\ ")
 
 def arxius_path(pathf, pathd):	
@@ -218,9 +218,14 @@ def softlink():
 
 def inode(num):
 	sel_inode=editArea_rig_bot.selection_get()
+	os.chdir(directoris[num])
+	print "diff -y --suppress-common-lines "+sel_inode+" "+path[1-num]+"/"+sel_inode[2:]+" | wc -l"
 	num_lineas=commands.getoutput("diff -y --suppress-common-lines "+sel_inode+" "+path[1-num]+"/"+sel_inode[2:]+" | wc -l")
-	text_cmp_top_r.insert(INSERT, "Inode: "+commands.getoutput("stat -c '%i' "+path[num]+"/"+sel_inode[2:])+"\nPath relatiu: "+sel_inode+"\nNombre de línies diferents: "+num_lineas+"\n")
-
+	if num==0:
+		text_cmp_top.insert(INSERT, "Inode: "+commands.getoutput("stat -c '%i' "+path[num]+"/"+sel_inode[2:])+"\nPath relatiu: "+sel_inode+"\nNombre de línies diferents: "+num_lineas+"\n")
+	else:
+		text_cmp_top_r.insert(INSERT, "Inode: "+commands.getoutput("stat -c '%i' "+path[num]+"/"+sel_inode[2:])+"\nPath relatiu: "+sel_inode+"\nNombre de línies diferents: "+num_lineas+"\n")
+		
 def obre_arxiu_font():
 	listbox_original=[]
 	listbox_original=editArea.get(0,END)
