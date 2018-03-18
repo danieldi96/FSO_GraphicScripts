@@ -20,8 +20,8 @@ directoris=[]
 									#	[2]	comú
 
 def errores(path):
-	global trash, slink
-	trash,slink=False, False	
+	global slink
+	slink=False	
 	if os.path.islink(path):
 		slink=True	
 		
@@ -30,19 +30,20 @@ def arxiu_fon():
 	directoris[0]= tkFileDialog.askdirectory()
 	if directoris[0]:
 		lab_dir_fon.configure(text='\t\t'+directoris[0])
-	errores(directoris[0])
-	path[0]=directoris[0].replace(" ", "\ ")
+		errores(directoris[0])
+		path[0]=directoris[0].replace(" ", "\ ")
 
 def arxiu_des():
-	global directoris
+	global directoris, trash
+	trash=False
 	directoris[1] = tkFileDialog.askdirectory()
 	if directoris[1]:
 		lab_dir_des.configure(text='\t\t'+directoris[1])
-	errores(directoris[1])
-	if directoris[1]==".local/share/Trash/files":	
+		errores(directoris[1])
+		path[1]=directoris[1].replace(" ", "\ ")
+	if directoris[1]==os.path.expanduser("~")+"/.local/share/Trash/files":	
 		tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
 		trash=True		
-	path[1]=directoris[1].replace(" ", "\ ")
 
 def arxius_path(pathf, pathd):	
 	llista=[]																#Llista = Contindra els arxius que estan als dos paths
@@ -59,24 +60,35 @@ def cercar():
 	if(directoris[0] and directoris[1]):
 		if not trash and not slink:
 			if os.path.isdir(directoris[0]) and os.path.isdir(directoris[1]):
-				editArea.delete(0,END)
-				editArea_rig_top.delete(0,END)
-				editArea_rig_bot.delete(0,END)
-				
-				#Arxius originals
-				global arxius_comuns
-				arxius_comuns = arxius_path(directoris[0], directoris[1])			
-				for i in range(0,len(arxius_comuns)):
-					editArea.insert(END, arxius_comuns[i])
+				if len(editArea.curselection()) == 0:
+					editArea.delete(0,END)
+					editArea_rig_top.delete(0,END)
+					editArea_rig_bot.delete(0,END)
 					
-				#Archius iguals i semblants
-				if not trash:
-					os.chdir(directoris[1])
+					#Arxius originals
+					global arxius_comuns
+					arxius_comuns = arxius_path(directoris[0], directoris[1])			
 					for i in range(0,len(arxius_comuns)):
+						os.chdir(directoris[1])
+						editArea.insert(END, arxius_comuns[i])
 						if comp.cmp(directoris[0]+"/"+arxius_comuns[i], directoris[1]+"/"+arxius_comuns[i], shallow=False):		#Si son el mateix arxiu
 							editArea_rig_top.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
 						else:
-							editArea_rig_bot.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])
+							editArea_rig_bot.insert(END, os.path.relpath(directoris[1])+"/"+arxius_comuns[i])						
+				else:
+					seleccionats_originals=editArea.selection_get()
+					
+					editArea.delete(0,END)
+					editArea_rig_top.delete(0,END)
+					editArea_rig_bot.delete(0,END)
+					
+					#Tornar a imprimir els seleccionats anteriorment
+					for i in seleccionats_originals.split():
+						editArea.insert(END, i)
+						if comp.cmp(directoris[0]+"/"+i, directoris[1]+"/"+i, shallow=False):		#Si son el mateix arxiu
+							editArea_rig_top.insert(END, os.path.relpath(directoris[1])+"/"+i)
+						else:
+							editArea_rig_bot.insert(END, os.path.relpath(directoris[1])+"/"+i)						
 			else:
 				if os.path.isdir(directoris[0]):
 					msg="\nEl directori desti no existeix\n"
@@ -85,19 +97,19 @@ def cercar():
 				else:
 					msg="\nNo exiteixen cap dels dos directoris\n"
 				tkMessageBox.showerror(title="ERROR",message=msg)
+	else:
+		if directoris[0]:
+			msg='\nFalta el directori destí per afegir\n'
 		else:
-			if directoris[0]:
-				msg='\nFalta el directori destí per afegir\n'
+			if directoris[1]:
+				msg='\nFalta el directori font per afegir\n'			
 			else:
-				if directoris[1]:
-					msg='\nFalta el directori font per afegir\n'			
-				else:
-					msg='\nFalten els dos directoris per afegir\n'
-			tkMessageBox.showwarning(title='Error', message=msg, icon='warning')	
-			return None
-			
+				msg='\nFalten els dos directoris per afegir\n'
+		tkMessageBox.showwarning(title='Error', message=msg, icon='warning')	
+		return None
+				
 def salir():
-	if tkMessageBox.askquestion(title='Salir', message='\nSegur que vols sortir?\n', icon='warning')=='yes':
+	if tkMessageBox.askquestion(title='Salir', message='\nSegur que vols sortir?\n', icon='warning')=='yes':	#Creo una ventana de 
 		finestra.quit()
 
 def seleccionat(num):
@@ -114,29 +126,29 @@ def seleccionat(num):
 	return False
 					
 def seleccionar_tots():
-	editArea.selection_set(0,END)
+	editArea.selection_set(0,END)												#Selecciona els items de la Listbox des del item 0 al final
 
 def seleccionar_tots_iguals():
-	editArea_rig_top.selection_set(0,END)
+	editArea_rig_top.selection_set(0,END)										#Selecciona els items de la Listbox des del item 0 al final
 
 def seleccionar_tots_sem():
-	editArea_rig_bot.selection_set(0,END)
+	editArea_rig_bot.selection_set(0,END)										#Selecciona els items de la Listbox des del item 0 al final
 
 def desseleccionar_tots():
-	editArea.selection_clear(0,END)
+	editArea.selection_clear(0,END)												#Deselecciona els items de la Listbox des del item 0 al final
 	
 def desseleccionar_tots_iguals():
-	editArea_rig_top.selection_clear(0,END)
+	editArea_rig_top.selection_clear(0,END)										#Deselecciona els items de la Listbox des del item 0 al final
 	
 def desseleccionar_tots_sem():
-	editArea_rig_bot.selection_clear(0,END)
+	editArea_rig_bot.selection_clear(0,END)										#Deselecciona els items de la Listbox des del item 0 al final
 	
 def esborrar_original(nom):
-		listbox_original=[]
-		listbox_original=editArea.get(0,END)
-		for i in range(0,len(listbox_original)):
-			if nom==("./"+listbox_original[i]):
-				editArea.delete(i)	
+	listbox_original=[]
+	listbox_original=editArea.get(0,END)
+	for i in range(0,len(listbox_original)):
+		if nom==("./"+listbox_original[i]):
+			editArea.delete(i)	
 
 def esborra_iguals():
 	if seleccionat(1):
@@ -144,7 +156,9 @@ def esborra_iguals():
 		for i in index_ig:
 			ig_element=editArea_rig_top.get(index_ig[0])						#Apuntamos siempre a la posición 0 del indice, porque al eliminar una posición de una listbox, todos los elementos de abajo suben 1 posición
 			string=ig_element[2:]												#Eliminamos el ./
-			path_ig_element=os.path.join(directoris[1], string)					#Concatenem path_treball+path_relatiu=path_abolut_fitxer
+			print path[1]
+			print string
+			path_ig_element=os.path.join(path[1], string)					#Concatenem path_treball+path_relatiu=path_abolut_fitxer
 			editArea_rig_top.delete(index_ig[0])
 			esborrar_original(ig_element)
 			os.system("rm "+path_ig_element)
@@ -155,7 +169,8 @@ def esborra_semblants():
 		for i in index_sem:
 			sem_element=editArea_rig_bot.get(index_sem[0])
 			string=sem_element[2:]
-			path_sem_element=os.path.join(directoris[1], string)
+			path_sem_element=os.path.join(path[1], string)
+			print path_sem_element
 			editArea_rig_bot.delete(index_sem[0])
 			esborrar_original(sem_element)
 			os.system("rm "+path_sem_element)
@@ -197,16 +212,24 @@ def borrat_ln(numero):
 	if seleccionat(1):
 		global string_ln, index_ln														
 		index_ln=editArea_rig_top.curselection()
-		for i in index_ln:															
-			ln_element=editArea_rig_top.get(index_ln[i])
-			string_ln.append(ln_element[2:])
-			path_element=os.path.join(directoris[1], string_ln[i])
+		print index_ln
+		ind=0
+		for i in index_ln:
+			print i															
+			ln_element=editArea_rig_top.get(index_ln[ind])
+			ind +=1
+			string_ln=(ln_element[2:])
+			path_element=os.path.join(directoris[1], string_ln)
+			no_whitespaces=path_element.replace(" ", "\ ")
+			print path_element
 			if os.path.isfile(path_element):
-				os.system("rm "+path_element)
+				print "rm "+path_element
+				os.system("rm "+no_whitespaces)
 			if numero==1:
-				os.system("ln "+directoris[0]+"/"+string_ln[i]+" "+string_ln[i])
+				os.system("ln "+path[0]+"/"+string_ln+" "+string_ln)
 			else:
-				os.system("ln -s "+directoris[0]+"/"+string_ln[i]+" "+string_ln[i])			
+				os.system("ln -s "+path[0]+"/"+string_ln+" "+string_ln)
+		index_ln=0
 
 def hardlink():
 	if seleccionat(1):
@@ -243,5 +266,6 @@ def comparar_modificar():
 	os.chdir(directoris[0])
 	sel_inode=editArea_rig_bot.selection_get()
 	os.system("vimdiff "+sel_inode+" "+path[1]+"/"+sel_inode[2:])
-	#text_cmp_left.insert(INSERT, commands.getoutput("vimdiff "+sel_inode))
+	#text_cmp_left.insert(INSERT, commands.getoutput("vimdiff "+sel_inode+" "+path[1]+"/"+sel_inode[2:]))
+	
 	

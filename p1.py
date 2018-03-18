@@ -138,7 +138,7 @@ fit_ori.pack(side=TOP, anchor=W)
 
 scroll = Scrollbar(frame_mid_L)
 scroll.pack(side=RIGHT, fill=Y)
-editArea = Listbox(frame_mid_L, width=40, yscrollcommand=scroll.set)
+editArea = Listbox(frame_mid_L, width=40, selectmode=MULTIPLE, yscrollcommand=scroll.set)
 editArea.pack(side=LEFT, anchor=W, fill=BOTH)    
 scroll.config(command=editArea.yview)
 
@@ -147,7 +147,7 @@ fit_ori = Label(frame_mid_T, text="    Fitxers Iguals: ")
 fit_ori.pack(side=TOP, anchor=W)
 scroll_rig_top = Scrollbar(frame_mid_T)
 scroll_rig_top.pack(side=LEFT, fill=Y)
-editArea_rig_top = Listbox(frame_mid_T, width=30, height=10, yscrollcommand=scroll_rig_top.set)
+editArea_rig_top = Listbox(frame_mid_T, width=30, height=10, selectmode=MULTIPLE, yscrollcommand=scroll_rig_top.set)
 editArea_rig_top.pack(side=LEFT, anchor=E, fill=BOTH, expand=True)  
 scroll_rig_top.config(command=editArea_rig_top.yview)
 
@@ -168,7 +168,7 @@ fit_sem.pack(side=TOP, anchor=W)
 
 scroll_rig_bot = Scrollbar(frame_mid_below)
 scroll_rig_bot.pack(side=LEFT, fill=Y)
-editArea_rig_bot = Listbox(frame_mid_below, width=30, height=10, yscrollcommand=scroll_rig_bot.set)
+editArea_rig_bot = Listbox(frame_mid_below, width=30, height=10, selectmode=MULTIPLE, yscrollcommand=scroll_rig_bot.set)
 editArea_rig_bot.pack(side=LEFT, anchor=E, fill=BOTH, expand=True) 
 scroll_rig_bot.config(command=editArea_rig_bot.yview)
 
