@@ -41,9 +41,9 @@ def arxiu_des():
 		lab_dir_des.configure(text='\t\t'+directoris[1])
 		errores(directoris[1])
 		path[1]=directoris[1].replace(" ", "\ ")
-	if directoris[1]==os.path.expanduser("~")+"/.local/share/Trash/files":	
-		tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
-		trash=True		
+		if directoris[1]==os.path.expanduser("~")+"/.local/share/Trash/files":	
+			tkMessageBox.showwarning(title="Warning",message="\nAquest path correspon a la paperera\n")	
+			trash=True		
 
 def arxius_path(pathf, pathd):	
 	llista=[]																#Llista = Contindra els arxius que estan als dos paths
@@ -108,8 +108,8 @@ def cercar():
 		tkMessageBox.showwarning(title='Error', message=msg, icon='warning')	
 		return None
 				
-def salir():
-	if tkMessageBox.askquestion(title='Salir', message='\nSegur que vols sortir?\n', icon='warning')=='yes':	#Creo una ventana de 
+def sortir():
+	if tkMessageBox.askquestion(title='Sortir', message='\nSegur que vols sortir?\n', icon='warning')=='yes':	#Creo una ventana de 
 		finestra.quit()
 
 def seleccionat(num):
@@ -156,9 +156,7 @@ def esborra_iguals():
 		for i in index_ig:
 			ig_element=editArea_rig_top.get(index_ig[0])						#Apuntamos siempre a la posición 0 del indice, porque al eliminar una posición de una listbox, todos los elementos de abajo suben 1 posición
 			string=ig_element[2:]												#Eliminamos el ./
-			print path[1]
-			print string
-			path_ig_element=os.path.join(path[1], string)					#Concatenem path_treball+path_relatiu=path_abolut_fitxer
+			path_ig_element=os.path.join(path[1], string)						#Concatenem path_treball+path_relatiu=path_abolut_fitxer
 			editArea_rig_top.delete(index_ig[0])
 			esborrar_original(ig_element)
 			os.system("rm "+path_ig_element)
@@ -170,7 +168,6 @@ def esborra_semblants():
 			sem_element=editArea_rig_bot.get(index_sem[0])
 			string=sem_element[2:]
 			path_sem_element=os.path.join(path[1], string)
-			print path_sem_element
 			editArea_rig_bot.delete(index_sem[0])
 			esborrar_original(sem_element)
 			os.system("rm "+path_sem_element)
@@ -178,58 +175,56 @@ def esborra_semblants():
 
 def renombra():
 	if seleccionat(2):
-		finestra_renom=Toplevel()
-		finestra_renom.title("Renombra el fitxer")
-		finestra_renom.geometry("300x50+500+400")
-		finestra_renom.resizable(0,0)
-		frame_renom = Frame(finestra_renom)
-		frame_renom.pack(fill=BOTH)
-		nou_nom=StringVar()
-		ent_renom=Entry(frame_renom, textvariable=nou_nom)
-		ent_renom.pack(anchor=CENTER, fill=X,expand=True)
-		
-		def actual_nom():
-			if len(editArea_rig_bot.get(0,END))!=0:
-				os.chdir(directoris[1])
-				vell_nom=editArea_rig_bot.selection_get()
-				os.system("mv "+vell_nom+" "+nou_nom.get())
-				esborrar_original(vell_nom)					
-				sel_rem=editArea_rig_bot.curselection()
-				editArea_rig_bot.delete(sel_rem)
-			else:
-				error_ent=StringVar()
-				error_ent.set("ERROR. No hi ha items a la llista")
-				ent_renom.config(background='red', textvariable=error_ent, justify=CENTER)
-					
-		but_renom_sortir=Button(frame_renom, text="Sortir", command=finestra_renom.destroy)
-		but_renom_sortir.pack(side=RIGHT)	
-		but_renom=Button(frame_renom, text="Aplicar", command=actual_nom)
-		but_renom.pack(side=RIGHT)
-		
-		finestra_renom.mainloop()
+		if len(editArea_rig_bot.curselection())==1:
+			finestra_renom=Toplevel()
+			finestra_renom.title("Renombra el fitxer")
+			finestra_renom.geometry("300x50+500+400")
+			finestra_renom.resizable(0,0)
+			frame_renom = Frame(finestra_renom)
+			frame_renom.pack(fill=BOTH)
+			nou_nom=StringVar()
+			ent_renom=Entry(frame_renom, textvariable=nou_nom)
+			ent_renom.pack(anchor=CENTER, fill=X,expand=True)
+			
+			def actual_nom():
+				if len(editArea_rig_bot.get(0,END))!=0:
+					os.chdir(directoris[1])
+					vell_nom=editArea_rig_bot.selection_get()
+					os.system("mv "+vell_nom+" "+nou_nom.get())
+					esborrar_original(vell_nom)					
+					sel_rem=editArea_rig_bot.curselection()
+					editArea_rig_bot.delete(sel_rem)
+				else:
+					error_ent=StringVar()
+					error_ent.set("ERROR. No hi ha items a la llista")
+					ent_renom.config(background='red', textvariable=error_ent, justify=CENTER)
+						
+			but_renom_sortir=Button(frame_renom, text="Sortir", command=finestra_renom.destroy)
+			but_renom_sortir.pack(side=RIGHT)	
+			but_renom=Button(frame_renom, text="Aplicar", command=actual_nom)
+			but_renom.pack(side=RIGHT)
+			
+			finestra_renom.mainloop()
+		else:
+			tkMessageBox.showwarning(title='Error', message="\nPer a renombrar selecciona solament un element\n", icon='warning')
 
 def borrat_ln(numero):
 	if seleccionat(1):
 		global string_ln, index_ln														
 		index_ln=editArea_rig_top.curselection()
-		print index_ln
 		ind=0
-		for i in index_ln:
-			print i															
+		for i in index_ln:														
 			ln_element=editArea_rig_top.get(index_ln[ind])
 			ind +=1
 			string_ln=(ln_element[2:])
 			path_element=os.path.join(directoris[1], string_ln)
 			no_whitespaces=path_element.replace(" ", "\ ")
-			print path_element
 			if os.path.isfile(path_element):
-				print "rm "+path_element
 				os.system("rm "+no_whitespaces)
 			if numero==1:
 				os.system("ln "+path[0]+"/"+string_ln+" "+string_ln)
 			else:
 				os.system("ln -s "+path[0]+"/"+string_ln+" "+string_ln)
-		index_ln=0
 
 def hardlink():
 	if seleccionat(1):
@@ -242,7 +237,6 @@ def softlink():
 def inode(num):
 	sel_inode=editArea_rig_bot.selection_get()
 	os.chdir(directoris[num])
-	print "diff -y --suppress-common-lines "+sel_inode+" "+path[1-num]+"/"+sel_inode[2:]+" | wc -l"
 	num_lineas=commands.getoutput("diff -y --suppress-common-lines "+sel_inode+" "+path[1-num]+"/"+sel_inode[2:]+" | wc -l")
 	if num==0:
 		text_cmp_top.insert(INSERT, "Inode: "+commands.getoutput("stat -c '%i' "+path[num]+"/"+sel_inode[2:])+"\nPath relatiu: "+sel_inode+"\nNombre de línies diferents: "+num_lineas+"\n")
@@ -267,5 +261,4 @@ def comparar_modificar():
 	sel_inode=editArea_rig_bot.selection_get()
 	os.system("vimdiff "+sel_inode+" "+path[1]+"/"+sel_inode[2:])
 	#text_cmp_left.insert(INSERT, commands.getoutput("vimdiff "+sel_inode+" "+path[1]+"/"+sel_inode[2:]))
-	
 	
