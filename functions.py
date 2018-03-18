@@ -214,17 +214,12 @@ def borrat_ln(numero):
 		index_ln=editArea_rig_top.curselection()
 		ind=0
 		for i in index_ln:														
-			ln_element=editArea_rig_top.get(index_ln[ind])
+			string_ln=(editArea_rig_top.get(index_ln[ind])[2:])
 			ind +=1
-			string_ln=(ln_element[2:])
-			path_element=os.path.join(directoris[1], string_ln)
-			no_whitespaces=path_element.replace(" ", "\ ")
-			if os.path.isfile(path_element):
-				os.system("rm "+no_whitespaces)
 			if numero==1:
-				os.system("ln "+path[0]+"/"+string_ln+" "+string_ln)
+				os.system("ln -f "+path[0]+"/"+string_ln+" "+string_ln)
 			else:
-				os.system("ln -s "+path[0]+"/"+string_ln+" "+string_ln)
+				os.system("ln -f -s "+path[0]+"/"+string_ln+" "+string_ln)
 
 def hardlink():
 	if seleccionat(1):
