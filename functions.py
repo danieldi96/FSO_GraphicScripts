@@ -9,7 +9,7 @@ import commands
 import os
 import filecmp as comp
 
-global lab_dir_fon, directoris, path_comu, arxius_comuns, string_ln, index_ln, trash, slink, path
+global directoris, path_comu, arxius_comuns, string_ln, index_ln, trash, slink, path
 path=[]
 string_ln=[]
 arxius_comuns=[]
@@ -26,7 +26,7 @@ def errores(path):
 		slink=True
 
 def arxiu_fon():
-	global lab_dir_fon, directoris
+	global directoris
 	directoris[0]= tkFileDialog.askdirectory()
 	if directoris[0]:
 		lab_dir_fon.configure(text='\t\t'+directoris[0])
